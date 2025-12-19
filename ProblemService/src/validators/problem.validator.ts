@@ -19,7 +19,7 @@ export const updateProblemSchema = z.object({
     testcases: z.array(z.object({
         input: z.string().min(1),
         output: z.string().min(1)
-    })).optional()
+    })).optional(),
 })
 
 export const findByDifficultySchema = z.object({
