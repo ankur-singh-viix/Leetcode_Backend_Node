@@ -9,6 +9,8 @@ import { connectDB } from './config/db.config';
 import { startworkers } from './workers/evaluation.worker';
 
 import { connect } from 'http2';
+import { pullImage } from './utils/containers/pullimage.util';
+import { pullAllImages } from './utils/containers/pullimage.util';
 const app = express();
 
 app.use(express.json());
@@ -37,4 +39,11 @@ app.listen(serverConfig.PORT, async() => {
     // await connectDB();
    await startworkers();
    logger.info('Workers started successfully');
+   
+
+//    await pullImage("python:3.9");
+//     console.log("Python image pulled successfully");
+
+    await pullAllImages();
+    console.log("All images pulled successfully");
 });
