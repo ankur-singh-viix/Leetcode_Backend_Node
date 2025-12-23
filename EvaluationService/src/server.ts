@@ -11,6 +11,8 @@ import { startworkers } from './workers/evaluation.worker';
 import { connect } from 'http2';
 import { pullImage } from './utils/containers/pullimage.util';
 import { pullAllImages } from './utils/containers/pullimage.util';
+import { createNewDockerContainer } from './utils/containers/createContainer.util';
+import { PYTHON_IMAGE } from './utils/constants';
 const app = express();
 
 app.use(express.json());
@@ -46,4 +48,13 @@ app.listen(serverConfig.PORT, async() => {
 
     await pullAllImages();
     console.log("All images pulled successfully");
+
+    const container=await createNewDockerContainer({
+        imageName: PYTHON_IMAGE,
+        cmdExecutable: ['echo' , 'Hello, World!'],
+        memoryLimit: 1024 * 1024 * 1024, // 1 GB
+        });
+
+        await container?.start();
+    console.log("Docker container created successfully");
 });
