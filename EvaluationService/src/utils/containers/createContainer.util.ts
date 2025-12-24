@@ -5,6 +5,7 @@ export interface CreateContainerOptions {
     imageName: string;
     cmdExecutable: string[];
     memoryLimit: number;
+    
 }
 
 export async function createNewDockerContainer(options: CreateContainerOptions) {

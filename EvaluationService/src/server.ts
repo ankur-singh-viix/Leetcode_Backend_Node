@@ -5,14 +5,16 @@ import v2Router from './routers/v2/index.router';
 import { appErrorHandler, genericErrorHandler } from './Middlewares/error-middleware';
 import logger from './config/logger.config';
 import { attachCorrelationIdMiddleware } from './Middlewares/correlation.middleware';
-import { connectDB } from './config/db.config';
-import { startworkers } from './workers/evaluation.worker';
+// import { connectDB } from './config/db.config';
+// import { startworkers } from './workers/evaluation.worker';
 
-import { connect } from 'http2';
+// import { connect } from 'http2';
 import { pullImage } from './utils/containers/pullimage.util';
 import { pullAllImages } from './utils/containers/pullimage.util';
-import { createNewDockerContainer } from './utils/containers/createContainer.util';
-import { PYTHON_IMAGE } from './utils/constants';
+// import { createNewDockerContainer } from './utils/containers/createContainer.util';
+// import { PYTHON_IMAGE } from './utils/constants';
+import { runPythonCode } from './utils/containers/pythonRunner.util';
+
 const app = express();
 
 app.use(express.json());
@@ -39,8 +41,8 @@ app.listen(serverConfig.PORT, async() => {
     logger.info(`Press Ctrl+C to stop the server.`);
 
     // await connectDB();
-   await startworkers();
-   logger.info('Workers started successfully');
+//    await startworkers();
+//    logger.info('Workers started successfully');
    
 
 //    await pullImage("python:3.9");
@@ -49,12 +51,29 @@ app.listen(serverConfig.PORT, async() => {
     await pullAllImages();
     console.log("All images pulled successfully");
 
-    const container=await createNewDockerContainer({
-        imageName: PYTHON_IMAGE,
-        cmdExecutable: ['echo' , 'Hello, World!'],
-        memoryLimit: 1024 * 1024 * 1024, // 1 GB
-        });
+    // const container =  await createNewDockerContainer({
+    //     imageName: PYTHON_IMAGE,
+    //     cmdExecutable: ['echo' , 'Hello, World!'],
+    //     memoryLimit: 1024 * 1024 * 1024, // 1 GB
+    //     });
 
-        await container?.start();
-    console.log("Docker container created successfully");
+    //     await container?.start();
+    // console.log("Docker container created successfully");
+    await testPyThonCode();
 });
+
+
+async function testPyThonCode(){
+    const pythonCode = `
+
+for i in range(5):
+    print(i)
+
+print("Hello, World!")
+    `;
+
+    // Create a container with the Python code
+
+    await runPythonCode(pythonCode);
+    
+}

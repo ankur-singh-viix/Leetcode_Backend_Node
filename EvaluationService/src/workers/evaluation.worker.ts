@@ -3,6 +3,7 @@ import { SUBMISSION_QUEUE } from "../utils/constants";
 import logger from "../config/logger.config";
 import { createNewRedisConnection } from "../config/redis.config";
 
+
 async function setupEvaluationWorker() {
     const worker = new Worker(SUBMISSION_QUEUE, async (job) => {
         logger.info(`Processing job ${job.id}`);
