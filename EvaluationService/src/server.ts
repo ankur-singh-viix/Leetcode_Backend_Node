@@ -6,14 +6,14 @@ import { appErrorHandler, genericErrorHandler } from './Middlewares/error-middle
 import logger from './config/logger.config';
 import { attachCorrelationIdMiddleware } from './Middlewares/correlation.middleware';
 // import { connectDB } from './config/db.config';
-// import { startworkers } from './workers/evaluation.worker';
+import { startworkers } from './workers/evaluation.worker';
 
 // import { connect } from 'http2';
-import { pullImage } from './utils/containers/pullimage.util';
+// import { pullImage } from './utils/containers/pullimage.util';
 import { pullAllImages } from './utils/containers/pullimage.util';
 // import { createNewDockerContainer } from './utils/containers/createContainer.util';
 // import { PYTHON_IMAGE } from './utils/constants';
-import { runPythonCode } from './utils/containers/pythonRunner.util';
+import { runCode } from './utils/containers/codeRunner.util';
 
 const app = express();
 
@@ -66,14 +66,26 @@ app.listen(serverConfig.PORT, async() => {
 async function testPyThonCode(){
     const pythonCode = `
 
-for i in range(5):
+import time
+i=0
+while True:
+    i+=1
     print(i)
+    time.sleep(1)
 
 print("Hello, World!")
     `;
 
     // Create a container with the Python code
 
-    await runPythonCode(pythonCode);
+    await runCode({
+        code: pythonCode,
+        language: 'python',
+        timeLimit: 3000, // 3 seconds
+        memoryLimit: 512 * 1024 * 1024, // 512 MB
+      
+    });
+
+
     
 }
