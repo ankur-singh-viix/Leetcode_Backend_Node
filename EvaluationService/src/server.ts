@@ -5,7 +5,7 @@ import v2Router from './routers/v2/index.router';
 import { appErrorHandler, genericErrorHandler } from './Middlewares/error-middleware';
 import logger from './config/logger.config';
 import { attachCorrelationIdMiddleware } from './Middlewares/correlation.middleware';
-// import { connectDB } from './config/db.config';
+import { connectDB } from './config/db.config';
 import { startworkers } from './workers/evaluation.worker';
 
 // import { connect } from 'http2';
@@ -41,9 +41,9 @@ app.listen(serverConfig.PORT, async() => {
     logger.info(`Server is running on http://localhost:${serverConfig.PORT}`);
     logger.info(`Press Ctrl+C to stop the server.`);
 
-    // await connectDB();
-//    await startworkers();
-//    logger.info('Workers started successfully');
+    await connectDB();
+   await startworkers();
+   logger.info('Workers started successfully');
    
 
 //    await pullImage("python:3.9");
@@ -60,52 +60,57 @@ app.listen(serverConfig.PORT, async() => {
 
     //     await container?.start();
     // console.log("Docker container created successfully");
-    // await testPyThonCode();
+    await testPyThonCode();
 
-    await testCppCode();
+    // await testCppCode();
 });
 
 
-// async function testPyThonCode(){
-//     const pythonCode = `
+async function testPyThonCode(){
+    const pythonCode = `
 
-// import time
-// i=0
-// while True:
-//     i+=1
-//     print(i)
-//     time.sleep(1)
+import time
+n = int(input())
+for i in range(n):
+    print(i+1)
+time.sleep(1)
 
-// print("Hello, World!")
-//     `;
+print("Hello, World!")
+    `;
 
-//     // Create a container with the Python code
+    // Create a container with the Python code
 
-//     await runCode({
-//         code: pythonCode,
-//         language: 'python',
-//         timeLimit: 3000, // 3 seconds
-//         memoryLimit: 512 * 1024 * 1024, // 512 MB
-//         imageName: PYTHON_IMAGE,
-      
-//     });
-// }
-
-async function testCppCode(){
-    const cppCode = `
-#include <iostream>
-using namespace std;
-
-int main() {
-    cout << "Hello, World!!!" << endl;
-    return 0;
-}
-    `;  
     await runCode({
-        code: cppCode,
-        language: 'cpp',
+        code: pythonCode,
+        language: 'python',
         timeLimit: 3000, // 3 seconds
         memoryLimit: 512 * 1024 * 1024, // 512 MB
-        imageName: CPP_IMAGE,
+        imageName: PYTHON_IMAGE,
+        input: '8',
+      
     });
 }
+
+// async function testCppCode(){
+//     const cppCode = `
+// #include <iostream>
+// using namespace std;
+
+// int main() {
+// int n;
+// std::cin >> n;
+//     for(int i=0; i< n; i++){
+//         cout << i+1 << endl;
+//     }
+//     cout << "Hello, World!!!" <<" " << n << endl;
+//     return 0;
+// }
+//     `;  
+//     await runCode({
+//         code: cppCode,
+//         language: 'cpp',
+//         timeLimit: 3000, // 3 seconds
+//         memoryLimit: 512 * 1024 * 1024, // 512 MB
+//         imageName: CPP_IMAGE,
+//     });
+// }

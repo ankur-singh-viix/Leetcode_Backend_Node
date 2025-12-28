@@ -14,9 +14,11 @@ export interface RunCodeOptions{
     timeLimit?: number, // in milliseconds
     memoryLimit?: number, // in bytes
     imageName?: string,
+    input?: string,
+    
 }
 export async function runCode(options : RunCodeOptions){
-    const { code, language, timeLimit = 5000, memoryLimit = 1024 * 1024 * 1024 , imageName } = options;
+    const { code, language, timeLimit = 5000, memoryLimit = 1024 * 1024 * 1024 , imageName , input } = options;
     
     if(!allowListedLanguages.includes(language)){
         throw new Error(`Language ${language} is not supported.`);
@@ -24,14 +26,14 @@ export async function runCode(options : RunCodeOptions){
     
     const container =  await createNewDockerContainer({
             imageName: imageName || PYTHON_IMAGE,
-            cmdExecutable: commands[language](code),
+            cmdExecutable: commands[language](code , input || ''),
             memoryLimit: 1024 * 1024 * 1024, // 1 GB
         });
     
         const timeLimitExceededTimeout = setTimeout(async () => {
             console.log("Time limit exceeded. Stopping the container.");
             // container?.remove();
-            container?.kill();
+            // container?.kill();
            
         }, options.timeLimit || 5000);
 
@@ -50,6 +52,13 @@ export async function runCode(options : RunCodeOptions){
     
         console.log("Container Logs:", logs?.toString());
         // await container?.stop();
+        // await container?.remove();
+
+        const sampleOutput = "36"
+        const logsString = logs?.toString() ;
+
+        // console.log("Sample Output:", logsString===sampleOutput);
+
         // await container?.remove();
 
         clearTimeout(timeLimitExceededTimeout);
