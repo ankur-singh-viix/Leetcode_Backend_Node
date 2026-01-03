@@ -6,6 +6,8 @@ type ServerConfig = {
     PROBLEM_SERVICE: string,
     SUBMISSION_SERVICE: string,
     DB_URL: string,
+    REDIS_HOST: string,
+    REDIS_PORT: number
    
 }
 
@@ -20,5 +22,8 @@ export const serverConfig: ServerConfig = {
     PORT: Number(process.env.PORT) || 3001,
     DB_URL: process.env.DB_URL || 'mongodb://localhost:27017/LC_ProblemService',
     PROBLEM_SERVICE: process.env.PROBLEM_SERVICE || "http://localhost:3001/api/v1",
-    SUBMISSION_SERVICE: process.env.SUBMISSION_SERVICE || "http://localhost:3002/api/v1"
+    SUBMISSION_SERVICE: process.env.SUBMISSION_SERVICE || "http://localhost:3002/api/v1",
+    REDIS_HOST: process.env.REDIS_HOST || 'localhost',
+    REDIS_PORT: Number(process.env.REDIS_PORT) || 6379
+
 };

@@ -6,7 +6,8 @@ import { appErrorHandler, genericErrorHandler } from './Middlewares/error-middle
 import logger from './config/logger.config';
 import { attachCorrelationIdMiddleware } from './Middlewares/correlation.middleware';
 import { connectDB } from './config/db.config';
-import { startworkers } from './workers/evaluation.worker';
+import startWorker from './workers/evaluation.worker';
+
 
 // import { connect } from 'http2';
 // import { pullImage } from './utils/containers/pullimage.util';
@@ -42,7 +43,7 @@ app.listen(serverConfig.PORT, async() => {
     logger.info(`Press Ctrl+C to stop the server.`);
 
     await connectDB();
-   await startworkers();
+   await startWorker();
    logger.info('Workers started successfully');
    
 
@@ -60,36 +61,36 @@ app.listen(serverConfig.PORT, async() => {
 
     //     await container?.start();
     // console.log("Docker container created successfully");
-    await testPyThonCode();
+    // await testPyThonCode();
 
     // await testCppCode();
 });
 
 
-async function testPyThonCode(){
-    const pythonCode = `
+// async function testPyThonCode(){
+//     const pythonCode = `
 
-import time
-n = int(input())
-for i in range(n):
-    print(i+1)
-time.sleep(1)
+// import time
+// n = int(input())
+// for i in range(n):
+//     print(i+1)
+// time.sleep(1)
 
-print("Hello, World!")
-    `;
+// print("Hello, World!")
+//     `;
 
-    // Create a container with the Python code
+//     // Create a container with the Python code
 
-    await runCode({
-        code: pythonCode,
-        language: 'python',
-        timeLimit: 3000, // 3 seconds
-        memoryLimit: 512 * 1024 * 1024, // 512 MB
-        imageName: PYTHON_IMAGE,
-        input: '8',
+//     await runCode({
+//         code: pythonCode,
+//         language: 'python',
+//         timeLimit: 3000, // 3 seconds
+//         memoryLimit: 512 * 1024 * 1024, // 512 MB
+//         imageName: PYTHON_IMAGE,
+//         input: '8',
       
-    });
-}
+//     });
+// }
 
 // async function testCppCode(){
 //     const cppCode = `
@@ -112,5 +113,6 @@ print("Hello, World!")
 //         timeLimit: 3000, // 3 seconds
 //         memoryLimit: 512 * 1024 * 1024, // 512 MB
 //         imageName: CPP_IMAGE,
+
 //     });
 // }

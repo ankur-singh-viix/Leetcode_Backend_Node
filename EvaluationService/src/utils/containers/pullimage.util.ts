@@ -3,11 +3,15 @@ import { CPP_IMAGE, PYTHON_IMAGE } from "../constants";
 import logger from "../../config/logger.config";
 
 export async function pullImage(image: string) {
-    const docker = new Docker();
+const docker = new Docker();
 
-    return new Promise((res, rej) => {
+  return new Promise((res, rej) => {
         docker.pull(image, (err: Error, stream: NodeJS.ReadableStream) => {
-            if(err) return err;
+            
+            if(err) {
+                rej(err);
+                return;
+            }
 
             docker.modem.followProgress(
                 stream, 
@@ -35,5 +39,6 @@ export async function pullAllImages() {
     } catch (error) {
         logger.error("Error pulling images", error);
     }
-
 }
+
+
